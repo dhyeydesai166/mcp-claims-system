@@ -16,7 +16,11 @@ async def main() -> None:
             tools = await session.list_tools()
             print("tools:", [tool.name for tool in tools.tools])
             result = await session.call_tool("ping", {"name": "equipment"})
-            texts = [block.text for block in result.content if getattr(block, "text", None)]
+            texts = []
+            for block in result.content:
+                text = getattr(block, "text", None)
+                if isinstance(text, str):
+                    texts.append(text)
             print("\n".join(texts) if texts else result)
 
 
