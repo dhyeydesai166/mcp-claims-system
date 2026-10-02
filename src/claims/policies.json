@@ -1,0 +1,10 @@
+{
+  "standard": [
+    {"item": "monitor", "max_count": 1, "refresh_years": 3},
+    {"item": "laptop", "max_count": 1, "refresh_years": 4}
+  ],
+  "manager": [
+    {"item": "monitor", "max_count": 2, "refresh_years": 3},
+    {"item": "laptop", "max_count": 1, "refresh_years": 2}
+  ]
+}

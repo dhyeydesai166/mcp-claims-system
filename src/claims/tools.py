@@ -1,17 +1,17 @@
+from datetime import date
 import json
 from pathlib import Path
 
 
-def load_data() -> dict:
-    path = Path(__file__).with_name("data.json")
+def _load_json(filename: str) -> dict:
+    path = Path(__file__).with_name(filename)
     with path.open(encoding="utf-8") as handle:
         return json.load(handle)
 
 
 def get_employee_info(employee_id: str) -> dict:
     """Return role, tenure, and equipment for one employee id."""
-    data = load_data()
-    employees = data["employees"]
+    employees = _load_json("employees.json")
     if employee_id not in employees:
         raise KeyError(f"Unknown employee id: {employee_id}")
     employee = employees[employee_id]
@@ -26,11 +26,66 @@ def get_employee_info(employee_id: str) -> dict:
 
 def get_policy_limits(role: str) -> dict:
     """Return the item limits for one role."""
-    data = load_data()
-    policies = data["policies"]
+    policies = _load_json("policies.json")
     if role not in policies:
         raise KeyError(f"Unknown role: {role}")
     return {
         "role": role,
         "limits": policies[role],
+    }
+
+
+def check_request_eligibility(
+    employee_id: str,
+    item: str,
+    today: date | None = None,
+) -> dict:
+    """Decide approve, deny, or escalate for one employee and one item."""
+    if today is None:
+        today = date.today()
+    info = get_employee_info(employee_id)
+    limits = get_policy_limits(str(info["role"]))["limits"]
+    rule = next(
+        (limit for limit in limits if limit["item"] == item),
+        None,
+    )
+    if rule is None:
+        return {
+            "employee_id": employee_id,
+            "item": item,
+            "decision": "escalate",
+            "reason": f"{item} is not covered for role {info['role']}",
+        }
+    owned = [
+        piece for piece in info["equipment"] if piece["item"] == item
+    ]
+    if not owned:
+        return {
+            "employee_id": employee_id,
+            "item": item,
+            "decision": "approve",
+            "reason": f"No {item} on file",
+        }
+    newest = max(owned, key=lambda piece: piece["issued_on"])
+    issued_on = date.fromisoformat(newest["issued_on"])
+    next_eligible = issued_on.replace(
+        year=issued_on.year + int(rule["refresh_years"])
+    )
+    if today < next_eligible:
+        return {
+            "employee_id": employee_id,
+            "item": item,
+            "decision": "deny",
+            "reason": (
+                f"Newest {item} was issued {newest['issued_on']}. "
+                f"Next eligible date is {next_eligible.isoformat()}"
+            ),
+        }
+    return {
+        "employee_id": employee_id,
+        "item": item,
+        "decision": "approve",
+        "reason": (
+            f"Newest {item} is due on {next_eligible.isoformat()}"
+        ),
     }

@@ -1,0 +1,36 @@
+{
+  "E101": {
+    "name": "Priya Shah",
+    "role": "standard",
+    "tenure_years": 2,
+    "equipment": [
+      {"item": "laptop", "issued_on": "2024-06-01"}
+    ]
+  },
+  "E102": {
+    "name": "Luis Ortega",
+    "role": "standard",
+    "tenure_years": 5,
+    "equipment": [
+      {"item": "monitor", "issued_on": "2025-11-01"},
+      {"item": "laptop", "issued_on": "2023-01-01"}
+    ]
+  },
+  "E103": {
+    "name": "Mina Cho",
+    "role": "manager",
+    "tenure_years": 6,
+    "equipment": [
+      {"item": "laptop", "issued_on": "2025-08-01"}
+    ]
+  },
+  "E104": {
+    "name": "Owen Blake",
+    "role": "manager",
+    "tenure_years": 3,
+    "equipment": [
+      {"item": "laptop", "issued_on": "2022-01-01"},
+      {"item": "monitor", "issued_on": "2021-01-01"}
+    ]
+  }
+}
