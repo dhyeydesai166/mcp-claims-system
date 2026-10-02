@@ -22,3 +22,15 @@ def get_employee_info(employee_id: str) -> dict:
         "tenure_years": employee["tenure_years"],
         "equipment": employee["equipment"],
     }
+
+
+def get_policy_limits(role: str) -> dict:
+    """Return the item limits for one role."""
+    data = load_data()
+    policies = data["policies"]
+    if role not in policies:
+        raise KeyError(f"Unknown role: {role}")
+    return {
+        "role": role,
+        "limits": policies[role],
+    }
