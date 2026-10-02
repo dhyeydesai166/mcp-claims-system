@@ -89,3 +89,28 @@ def check_request_eligibility(
             f"Newest {item} is due on {next_eligible.isoformat()}"
         ),
     }
+
+
+def flag_for_human_review(
+    employee_id: str,
+    request: str,
+    reason: str,
+    queue_path: Path | None = None,
+) -> dict:
+    """Append one escalation record. Reject an empty field or unknown id."""
+    if not employee_id.strip() or not request.strip() or not reason.strip():
+        raise ValueError("employee_id, request, and reason are required")
+    get_employee_info(employee_id)
+    path = queue_path or Path(__file__).with_name("review_queue.json")
+    if path.exists():
+        queue = json.loads(path.read_text(encoding="utf-8"))
+    else:
+        queue = []
+    record = {
+        "employee_id": employee_id,
+        "request": request,
+        "reason": reason,
+    }
+    queue.append(record)
+    path.write_text(json.dumps(queue, indent=2) + "\n", encoding="utf-8")
+    return record
