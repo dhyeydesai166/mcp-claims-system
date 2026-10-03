@@ -22,7 +22,7 @@ The issue date in the file stays a real calendar date. The check uses the date i
 | manager | monitor | 2 | every 3 years |
 | manager | laptop | 1 | every 2 years |
 
-Approve when the item is in that role's catalog and either they do not have one yet, or today is on or after the next eligible date, and adding one would not pass the maximum.
+Approve when the item is in that role's catalog and either they do not have one yet, or today is on or after the next eligible date. A refresh is a replacement of the existing item, not an addition, so the maximum count is not exceeded.
 
 Deny when the item is in the catalog but today is still before the next eligible date, or they are already at the maximum.
 
